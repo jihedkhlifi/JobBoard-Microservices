@@ -1,0 +1,27 @@
+# Java / Spring Boot / Maven
+**/target/
+*.class
+*.log
+
+# IntelliJ / VS Code
+.idea/
+*.iml
+.vscode/
+
+# Node.js
+node_modules/
+npm-debug.log*
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.pytest_cache/
+
+# Fichiers sensibles
+.env
+.env.*
+!.env.example
+application-local.yml
+application-local.properties

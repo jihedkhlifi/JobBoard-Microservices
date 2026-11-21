@@ -1,0 +1,31 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      server:
+        webflux:
+          routes:
+            - id: candidate-route
+              uri: lb://candidate-service
+              predicates:
+                - Path=/api/candidates,/api/candidates/**,/api/addresses,/api/addresses/**
+            - id: job-route
+              uri: lb://job-service
+              predicates:
+                - Path=/api/jobs,/api/jobs/**,/api/categories,/api/categories/**
+            - id: application-route
+              uri: lb://application-service
+              predicates:
+                - Path=/api/applications,/api/applications/**
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
