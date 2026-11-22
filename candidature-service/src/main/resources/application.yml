@@ -1,14 +1,18 @@
 server:
   port: 8085
+
 spring:
   application:
     name: candidature
+
 eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+    healthcheck:
+      enabled: true
   instance:
     prefer-ip-address: true
 
@@ -16,4 +20,16 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: candidature
+    version: 1.0.0
+    description: Microservice de gestion des candidatures

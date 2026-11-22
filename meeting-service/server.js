@@ -2,6 +2,7 @@
 
 const express = require('express');
 const os = require('os');
+const packageInfo = require('./package.json');
 
 const app = express();
 const port = Number(process.env.PORT || 8083);
@@ -28,6 +29,13 @@ app.get('/health', (_req, res) =>
     res.json({ status: 'UP', service: serviceName })
 );
 
+app.get('/info', (_req, res) =>
+    res.json({
+        name: packageInfo.name,
+        version: packageInfo.version
+    })
+);
+
 const instance = {
   instanceId,
   app: serviceName,
@@ -39,8 +47,8 @@ const instance = {
   port: { '$': port, '@enabled': 'true' },
   securePort: { '$': 443, '@enabled': 'false' },
   homePageUrl: `${serviceAddress}/`,
-  statusPageUrl: `${serviceAddress}/health`,
-  healthCheckUrl: `${serviceAddress}/health`,
+    statusPageUrl: `${serviceAddress}/info`,
+    healthCheckUrl: `${serviceAddress}/health`,
   dataCenterInfo: {
     '@class': 'com.netflix.appinfo.InstanceInfo$DefaultDataCenterInfo',
     name: 'MyOwn'

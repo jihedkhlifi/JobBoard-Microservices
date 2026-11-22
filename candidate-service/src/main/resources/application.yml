@@ -11,5 +11,25 @@ eureka:
       defaultZone: http://localhost:8761/eureka/
     register-with-eureka: true
     fetch-registry: true
+    healthcheck:
+      enabled: true
   instance:
     prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: candidat
+    version: 1.0.0
+    description: Microservice de gestion des candidats

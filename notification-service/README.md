@@ -1,39 +1,45 @@
-# NOTIFICATION Service (Python / FastAPI)
+# NOTIFICATION — JobBoard (FastAPI + Eureka)
 
-Microservice de démonstration pour l'atelier JobBoard/Eureka.
+Microservice Python pour les ateliers JobBoard. Port par défaut : **8084** ; nom enregistré dans Eureka : **NOTIFICATION**.
 
-## Prérequis
+## Démarrer sous PowerShell
 
-- Python >= 3.10
-- Eureka Server lancé sur `http://localhost:8761`
-
-## Démarrage (PowerShell, terminal dans ce dossier)
+Démarrer Eureka Server sur `http://localhost:8761` avant NOTIFICATION.
 
 ```powershell
+cd .\notification-service
 python -m pip install -r requirements.txt
 python main.py
 ```
 
-Par défaut : port `8084` et nom Eureka `NOTIFICATION`.
+Le terminal doit afficher `Uvicorn running ... :8084` puis `[EUREKA] Registered ...notification:8084`.
 
-## Test
+## Endpoints
 
-- http://localhost:8084/hello
-- http://localhost:8084/docs
-- http://localhost:8761 (dashboard Eureka : `NOTIFICATION UP (1)`)
+- `http://localhost:8084/health` → `{"status":"UP","service":"NOTIFICATION"}`
+- `http://localhost:8084/info` → `{"name":"notification-service","version":"1.0.0"}`
+- `http://localhost:8084/api/notifications/hello` → message de test.
 
-## Deuxième instance
+Le registre `http://localhost:8761/eureka/apps/NOTIFICATION` contient les URLs `healthCheckUrl=/health` et `statusPageUrl=/info`. Eureka reçoit un enregistrement HTTP `POST`, des renouvellements `PUT` et une désinscription `DELETE` à l'arrêt normal.
 
-Dans un **autre** terminal PowerShell, depuis le même dossier :
+## Configuration facultative
+
+- `PORT` (défaut `8084`)
+- `EUREKA_URL` (défaut `http://localhost:8761/eureka`)
+- `SERVICE_HOST` (défaut nom de l'ordinateur)
+- `SERVICE_IP` (défaut `127.0.0.1`, uniquement pour un atelier local sur la même machine)
+
+Exemple de seconde instance dans un autre terminal :
 
 ```powershell
-$env:PORT=8094; python main.py
+$env:PORT=8094
+python main.py
 ```
 
-Le dashboard Eureka devrait afficher `NOTIFICATION UP (2)`.
+## Remarque par rapport au PDF de l'atelier
 
-## Variables d'environnement facultatives
+Le sujet mentionne `py-eureka-client` et `eureka_client.init(...)`. Cette version conserve volontairement une implémentation directe **de l'API REST Eureka** avec la bibliothèque standard Python (`urllib`), qui a déjà fonctionné dans notre atelier. Les champs Eureka `healthCheckUrl` et `statusPageUrl`, le lifecycle FastAPI, les heartbeats et la désinscription sont présents. Si le professeur exige l'utilisation littérale de `py-eureka-client`, cette implémentation doit être adaptée.
 
-`PORT` (8084), `EUREKA_URL` (`http://localhost:8761/eureka`), `SERVICE_HOST` (nom de machine), `SERVICE_IP` (`127.0.0.1`).
+## IntelliJ IDEA
 
-**Note :** `127.0.0.1` convient à un atelier sur une même machine. Pour Docker ou plusieurs machines, utiliser une adresse `SERVICE_IP` accessible aux autres services.
+Le ZIP ne configure pas automatiquement l'interpréteur dans IntelliJ. Pour faire disparaître les avertissements `No module named 'os'` ou `Unresolved reference 'int'`, associer au **module Python** le même interpréteur que celui de PowerShell : `C:\Python315\python.exe`. Ne pas remplacer le SDK Java des modules Spring Boot.
